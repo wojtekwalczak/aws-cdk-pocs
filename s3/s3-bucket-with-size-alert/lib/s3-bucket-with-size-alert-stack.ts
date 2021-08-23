@@ -6,6 +6,7 @@ import * as cw from "@aws-cdk/aws-cloudwatch";
 import * as subs from "@aws-cdk/aws-sns-subscriptions";
 import * as cw_actions from "@aws-cdk/aws-cloudwatch-actions";
 import { RemovalPolicy } from "@aws-cdk/core";
+import { ComparisonOperator } from "@aws-cdk/aws-cloudwatch";
 
 export interface Props {
   userArn: string;
@@ -66,7 +67,9 @@ export class S3BucketWithSizeAlertStack extends cdk.Stack {
       alarmDescription: "Alarm for too large bucket",
       threshold: props.maxBucketSizeInBytes,
       evaluationPeriods: 1,
-      statistic: "max",
+      actionsEnabled: true,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      period: cdk.Duration.days(1),
     });
 
     return alarm;
