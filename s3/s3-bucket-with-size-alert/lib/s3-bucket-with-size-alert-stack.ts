@@ -56,7 +56,7 @@ export class S3BucketWithSizeAlertStack extends cdk.Stack {
       // This metric is updated once a day by AWS
       metricName: "BucketSizeBytes",
       dimensions: {
-        Name: bucketName,
+        BucketName: bucketName,
         StorageType: "StandardStorage",
       },
     });
