@@ -18,8 +18,6 @@ The simplest way to monitor the bucket size is the default `BucketSizeBytes` met
 
 It is updated by AWS once every day which *makes it hard to test*.
 
-What's even worse, the availability of the metric's value can be delayed more than 24 hours, which makes it possible for the CloudWatch alarm to be constantly in `Insufficient Data` state, because the maximum alarm period is 24 hours. Thus, it is critical to set the `evaluationPeriods` to a value larger than 1, and pick the maximum statistic out of the available values.
-
 Moreover, as of August 2021, AWS CDK *does not support importing S3 metrics in CDK code*, although it [supports importing other metrics](https://docs.aws.amazon.com/cdk/latest/guide/how_to_set_cw_alarm.html). It is also discussed in this [issue](https://github.com/aws/aws-cdk/issues/1739).
 
 Instead, a new metric has to be created with properly set values for `namespace`, `metricName` and `dimensions`, which is burdensome.
