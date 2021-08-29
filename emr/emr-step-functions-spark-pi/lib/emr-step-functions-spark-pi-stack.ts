@@ -119,7 +119,9 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       this,
       "Termination Protection",
       {
-        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+        clusterId: sfn.TaskInput.fromJsonPathAt(
+          "$.CreateClusterResult.ClusterId"
+        ).value,
         terminationProtected: false,
       }
     );
@@ -128,12 +130,15 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       this,
       "Terminate Cluster",
       {
-        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+        clusterId: sfn.TaskInput.fromJsonPathAt(
+          "$.CreateClusterResult.ClusterId"
+        ).value,
       }
     );
 
     const sparkPi = new tasks.EmrAddStep(this, "Task", {
-      clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+      clusterId: sfn.TaskInput.fromJsonPathAt("$.CreateClusterResult.ClusterId")
+        .value,
       name: "SparkPi",
       jar: "command-runner.jar",
       args: [
@@ -149,6 +154,7 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       ],
       actionOnFailure: tasks.ActionOnFailure.CONTINUE,
       integrationPattern: sfn.IntegrationPattern.RUN_JOB,
+      resultPath: "$.SparkPiResult",
     });
 
     const terminateClusterChoice = new sfn.Choice(this, "Terminate cluster?");
