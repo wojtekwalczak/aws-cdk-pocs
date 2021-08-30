@@ -9,6 +9,7 @@ export interface EmrStepFunctionsSparkPiProps {
   masterInstanceType: string;
   coreInstanceType: string;
   stateMachineName: string;
+  emrVersion: string;
 }
 
 export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
@@ -38,9 +39,6 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
 
     const serviceRole = new iam.Role(this, "ServiceRole", {
       assumedBy: new iam.ServicePrincipal("elasticmapreduce.amazonaws.com"),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonEC2FullAccess"),
-      ],
       inlinePolicies: {
         fullEc2Access: new iam.PolicyDocument({
           statements: [
@@ -76,7 +74,7 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
     const createCluster = new tasks.EmrCreateCluster(this, "Create Cluster", {
       clusterRole: clusterRole,
       name: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
-      releaseLabel: "emr-6.3.0",
+      releaseLabel: infrastructureProps.emrVersion,
       logUri: `s3://${logBucket.bucketName}/`,
       instances: {
         instanceFleets: [
@@ -111,7 +109,10 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
           name: "Spark",
         },
       ],
-      resultPath: "$.CreateClusterResult",
+      resultSelector: {
+        "CreateClusterResult.$": "$",
+        "ClusterId.$": "$.ClusterId",
+      },
       serviceRole,
     });
 
@@ -119,7 +120,7 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       this,
       "Termination Protection",
       {
-        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterId").value,
         terminationProtected: false,
       }
     );
@@ -128,12 +129,14 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       this,
       "Terminate Cluster",
       {
-        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+        clusterId: sfn.TaskInput.fromJsonPathAt(
+          "$.CreateClusterResult.ClusterId"
+        ).value,
       }
     );
 
     const sparkPi = new tasks.EmrAddStep(this, "Task", {
-      clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterName").value,
+      clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterId").value,
       name: "SparkPi",
       jar: "command-runner.jar",
       args: [
@@ -149,6 +152,7 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
       ],
       actionOnFailure: tasks.ActionOnFailure.CONTINUE,
       integrationPattern: sfn.IntegrationPattern.RUN_JOB,
+      resultPath: "$.SparkPiResult",
     });
 
     const terminateClusterChoice = new sfn.Choice(this, "Terminate cluster?");

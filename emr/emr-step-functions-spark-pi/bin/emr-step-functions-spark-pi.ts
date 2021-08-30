@@ -5,8 +5,9 @@ import { EmrStepFunctionsSparkPiStack } from "../lib/emr-step-functions-spark-pi
 
 const app = new cdk.App();
 new EmrStepFunctionsSparkPiStack(app, "EmrStepFunctionsSparkPiStack", {
-  logsBucketName: `${process.env.USERNAME}-emr-poc-logs`,
+  logsBucketName: `${process.env.USERNAME}-emr-sfn-sparkpi-poc-logs`,
   masterInstanceType: "m5.xlarge",
   coreInstanceType: "m5.xlarge",
-  stateMachineName: `${process.env.USERNAME}-emr-poc`,
+  stateMachineName: `${process.env.USERNAME}-emr-sparkpi-poc`,
+  emrVersion: "emr-6.3.0",
 });
