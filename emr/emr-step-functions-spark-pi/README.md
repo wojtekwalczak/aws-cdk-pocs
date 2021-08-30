@@ -1,14 +1,39 @@
-# Welcome to your CDK TypeScript project!
+# EMR with Step Functions task for running SparkPi example
 
-This is a blank project for TypeScript development with CDK.
+## Introduction
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+This IaC builds the following state machine:
 
-## Useful commands
+![](diagrams/emr-sparkpi-state-machine.png)
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+
+## Execution
+
+Example Step Functions input if the cluster is non-existent:
+
+```json
+{
+	"CreateCluster": true,
+    "TerminateCluster": true,
+    "ClusterName": "wojtek-emr-sfn-sparkpi-poc"
+}
+```
+
+If the cluster is already running, provide the following input:
+
+```json
+{
+	"CreateCluster": false,
+    "CreateClusterResult": {
+        "ClusterId": "<EMR_CLUSTER_ID>"
+    }
+    "TerminateCluster": true
+}
+```
+
+## Deployment
+
+To deploy this stack to your account:
+ - edit `bin/emr-step-functions-spark-pi.ts` file and provide your user's ARN and email addresses for alert recipients
+ - build and test the package: `npm run build && npm test`
+ - deploy the package: `npx cdk deploy EmrStepFunctionsSparkPiStack`

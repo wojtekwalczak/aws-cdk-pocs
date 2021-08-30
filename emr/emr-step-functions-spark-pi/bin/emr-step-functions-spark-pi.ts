@@ -9,4 +9,5 @@ new EmrStepFunctionsSparkPiStack(app, "EmrStepFunctionsSparkPiStack", {
   masterInstanceType: "m5.xlarge",
   coreInstanceType: "m5.xlarge",
   stateMachineName: `${process.env.USERNAME}-emr-sparkpi-poc`,
+  emrVersion: "emr-6.3.0",
 });

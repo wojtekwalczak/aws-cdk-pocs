@@ -17,6 +17,7 @@ test("Empty Stack", () => {
       masterInstanceType: "m5.xlarge",
       coreInstanceType: "m5.xlarge",
       stateMachineName: "emr-poc",
+      emrVersion: "emr-6.3.0",
     }
   );
   // THEN
