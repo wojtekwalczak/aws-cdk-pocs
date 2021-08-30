@@ -109,18 +109,19 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
           name: "Spark",
         },
       ],
-      resultSelector: {
-        "CreateClusterResult.$": "$",
-        "ClusterId.$": "$.ClusterId",
-      },
+      resultPath: "$.CreateClusterResult",
       serviceRole,
     });
 
+    // TODO: unused
     const terminationProtection = new tasks.EmrSetClusterTerminationProtection(
       this,
       "Termination Protection",
       {
-        clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterId").value,
+        clusterId: sfn.TaskInput.fromJsonPathAt(
+          "$.CreateClusterResult.ClusterId"
+        ).value,
+        // TODO: provide value from json payload
         terminationProtected: false,
       }
     );
@@ -136,7 +137,8 @@ export class EmrStepFunctionsSparkPiStack extends cdk.Stack {
     );
 
     const sparkPi = new tasks.EmrAddStep(this, "Task", {
-      clusterId: sfn.TaskInput.fromJsonPathAt("$.ClusterId").value,
+      clusterId: sfn.TaskInput.fromJsonPathAt("$.CreateClusterResult.ClusterId")
+        .value,
       name: "SparkPi",
       jar: "command-runner.jar",
       args: [

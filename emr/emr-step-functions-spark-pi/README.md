@@ -13,7 +13,7 @@ Example Step Functions input if the cluster is non-existent:
 
 ```json
 {
-	"CreateCluster": true,
+    "CreateCluster": true,
     "TerminateCluster": true,
     "ClusterName": "wojtek-emr-sfn-sparkpi-poc"
 }
@@ -23,7 +23,7 @@ If the cluster is already running, provide the following input:
 
 ```json
 {
-	"CreateCluster": false,
+    "CreateCluster": false,
     "CreateClusterResult": {
         "ClusterId": "<EMR_CLUSTER_ID>"
     }
