@@ -15,16 +15,13 @@
     <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
     <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-    <scala.major-minor-version>2.12</scala.major-minor-version>
-    <scala.version>${scala.major-minor-version}.15</scala.version>
     <scala-maven-plugin.version>3.4.6</scala-maven-plugin.version>
     <scalariform-maven-plugin.version>0.2.3</scalariform-maven-plugin.version>
-    <scalatest.version>3.0.9</scalatest.version>
     <scalatest-maven-plugin.version>2.0.2</scalatest-maven-plugin.version>
-    <scopt.version>4.0.1</scopt.version>
-<!--    <scoverage.plugin.version>1.4.0</scoverage.plugin.version>-->
+
+    <scala.major-minor-version>2.12</scala.major-minor-version>
+    <scala.version>${scala.major-minor-version}.15</scala.version>
     <spark.version>3.1.1</spark.version>
-    <spark-testing-base.version>${spark.version}_1.1.1</spark-testing-base.version>
   </properties>
 
   <dependencies>
@@ -32,37 +29,24 @@
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>${scala.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_${scala.major-minor-version}</artifactId>
-      <version>${scalatest.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.scopt</groupId>
-      <artifactId>scopt_${scala.major-minor-version}</artifactId>
-      <version>${scopt.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_${scala.major-minor-version}</artifactId>
       <version>${spark.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_${scala.major-minor-version}</artifactId>
       <version>${spark.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>AWSGlueETL</artifactId>
       <version>3.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.holdenkarau</groupId>
-      <artifactId>spark-testing-base_${scala.major-minor-version}</artifactId>
-      <version>${spark-testing-base.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
